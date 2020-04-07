@@ -33,9 +33,11 @@ app.get('/weather', weatherHandler);
 
 function weatherHandler(request, response) {
     const weatherData = require('./data/darksky.json');
-    const weather = request.query;
-    const weatherOutput = new Weather(city, darksky);
-    response.send(weatherOutput);
+    // const weather = request.query;  TODO: get lat/lon
+    const weatherResults = [];
+    weatherData.daily.data.forEach( dailyWeather => {
+        weatherResults.push(new Weather(dailyWeather))});
+    response.send(weatherResults);
 }
 
 // Has to happen after everything else
@@ -66,8 +68,9 @@ function Location(city, geoData) {
   this.longitude = parseFloat(geoData[0].lon);
 }
 
-// function Weather(city, darksky) {
-
-// }
+function Weather(weatherData) {
+    this.forecast = weatherData.summary;
+    this.time = new Date(weatherData.time * 1000);
+}
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
