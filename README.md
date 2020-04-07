@@ -4,7 +4,7 @@
 
 ## Overview
 
-City explorer is a static front end that will return the weather for a specific latitude and longitude based on user input.  This project is for us to build out an entire back end that will process that requet and, using API's return the requested information.
+City explorer is a static front end that will return the weather for a specific latitude and longitude based on user input.  This project is for us to build out an entire back end server that will process that request and, using API's return the requested information.
 
 ## Getting Started
 
