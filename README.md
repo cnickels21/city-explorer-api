@@ -16,11 +16,41 @@ The front end for this app will use HTML, CSS, and JavaScript.  The back end use
 
 ## Change Log
 
-Number and name of feature: Setup and Repo
+### Number and name of feature: Setup and Repo
 
 Estimate of time needed to complete: 1 hour
 
 Start time: 9:45
+
+Finish time: 11:00
+
+Actual time needed to complete: Little over an hour
+
+### Number and name of feature: Location Path
+
+Estimate of time needed to complete: 1 hour
+
+Start time: 11:15
+
+Finish time: 12:15
+
+Actual time needed to complete: 1 hour
+
+### Number and name of feature: Weather Path
+
+Estimate of time needed to complete: 1 hour
+
+Start time: 12:30
+
+Finish time:
+
+Actual time needed to complete:
+
+### Number and name of feature: Error Path
+
+Estimate of time needed to complete:
+
+Start time:
 
 Finish time:
 

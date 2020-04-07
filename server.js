@@ -18,10 +18,6 @@ app.get('/', (request, response) => {
   response.send('City Explorer Goes Here');
 });
 
-// app.get('/weather', (request, response) => {
-//   response.send('Weather.');
-// });
-
 // Add /location route
 app.get('/location', locationHandler);
 
@@ -33,13 +29,19 @@ function locationHandler(request, response) {
   response.send(location);
 }
 
+app.get('/weather', weatherHandler);
+
+function weatherHandler(request, response) {
+    const weatherData = require('./data/darksky.json');
+    const weather = request.query;
+    const weatherOutput = new Weather(city, darksky);
+    response.send(weatherOutput);
+}
+
 // Has to happen after everything else
 app.use(notFoundHandler);
 // Has to happen after the error might have occurred
 app.use(errorHandler); // Error Middleware
-
-// Make sure the server is listening for requests
-app.listen(PORT, () => console.log(`App is listening on ${PORT}`));
 
 // Helper Functions
 
@@ -58,8 +60,12 @@ function notFoundHandler(request, response) {
 }
 
 function Location(city, geoData) {
-  this.search_query = city; // "cedar rapids"
-  this.formatted_query = geoData[0].display_name; // "Cedar Rapids, Iowa"
+  this.search_query = city;
+  this.formatted_query = geoData[0].display_name;
   this.latitude = parseFloat(geoData[0].lat);
   this.longitude = parseFloat(geoData[0].lon);
 }
+
+// function Weather(city, darksky) {
+
+// }
