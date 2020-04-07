@@ -69,3 +69,5 @@ function Location(city, geoData) {
 // function Weather(city, darksky) {
 
 // }
+
+app.listen(PORT, () => console.log(`Listening on ${PORT}`));
