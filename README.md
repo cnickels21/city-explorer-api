@@ -55,3 +55,13 @@ Start time: 11:30
 Finish time: 12:30
 
 Actual time needed to complete: 1 hour
+
+### Number and name of feature: Location API
+
+Estimate of time needed to complete: Half an hour
+
+Start time: 9:40
+
+Finish time:
+
+Actual time needed to complete:
