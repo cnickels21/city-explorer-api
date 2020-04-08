@@ -134,7 +134,7 @@ function Location(city, geoData) {
 
 function Weather(weatherData) {
   this.forecast = weatherData.weather.description;
-  this.time = new Date(weatherData.ob_time);
+  this.time = new Date(weatherData.ob_time).toDateString();
 }
 
 function Trails(trailsData) {
@@ -146,7 +146,7 @@ function Trails(trailsData) {
   this.summary = trailsData.summary;
   this.trail_url = trailsData.url;
   this.conditions = trailsData.conditionDetails;
-  this.condition_date = new Date(trailsData.conditionDate);
+  this.condition_date = new Date(trailsData.conditionDate).toDateString();
 }
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
