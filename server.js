@@ -7,17 +7,10 @@ dotenv.config();
 // Application Dependencies
 const express = require('express');
 const cors = require('cors');
-
-
-
-
-// const superagent = require('superagent');
-
-
-
+const superagent = require('superagent');
 
 // Application Setup
-const PORT = process.env.PORT ;
+const PORT = process.env.PORT;
 const app = express();
 
 app.use(cors()); // Middleware
@@ -31,22 +24,34 @@ app.get('/location', locationHandler);
 
 // Route Handler
 function locationHandler(request, response) {
-  const geoData = require('./data/geo.json');
+
   const city = request.query.city;
-  const location = new Location(city, geoData);
-  response.send(location);
+  const url = 'https://us1.locationiq.com/v1/search.php';
+
+  superagent.get(url)
+    .query({
+      key: process.env.GEO_KEY,
+      q: city,
+      format: 'json'
+    })
+    .then(locationResponse => {
+      let geoData = locationResponse.body;
+      const location = new Location(city, geoData);
+      response.send(location);
+    })
+
 }
 
 app.get('/weather', weatherHandler);
 
 function weatherHandler(request, response) {
-    const weatherData = require('./data/darksky.json');
-    const weatherResults = [];
-    weatherData.daily.data.forEach( dailyWeather => {
-        weatherResults.push(new Weather(dailyWeather))
-    });
-    response.send(weatherResults);
-        // const weather = request.query;  TODO: get lat/lon
+  const weatherData = require('./data/darksky.json');
+  const weatherResults = [];
+  weatherData.daily.data.forEach(dailyWeather => {
+    weatherResults.push(new Weather(dailyWeather))
+  });
+  response.send(weatherResults);
+  // const weather = request.query;  TODO: get lat/lon
 }
 
 // Has to happen after everything else
@@ -78,8 +83,8 @@ function Location(city, geoData) {
 }
 
 function Weather(weatherData) {
-    this.forecast = weatherData.summary;
-    this.time = new Date(weatherData.time * 1000);
+  this.forecast = weatherData.summary;
+  this.time = new Date(weatherData.time * 1000);
 }
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
