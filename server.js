@@ -8,6 +8,14 @@ dotenv.config();
 const express = require('express');
 const cors = require('cors');
 
+
+
+
+// const superagent = require('superagent');
+
+
+
+
 // Application Setup
 const PORT = process.env.PORT ;
 const app = express();
@@ -33,11 +41,12 @@ app.get('/weather', weatherHandler);
 
 function weatherHandler(request, response) {
     const weatherData = require('./data/darksky.json');
-    // const weather = request.query;  TODO: get lat/lon
     const weatherResults = [];
     weatherData.daily.data.forEach( dailyWeather => {
-        weatherResults.push(new Weather(dailyWeather))});
+        weatherResults.push(new Weather(dailyWeather))
+    });
     response.send(weatherResults);
+        // const weather = request.query;  TODO: get lat/lon
 }
 
 // Has to happen after everything else
