@@ -45,13 +45,32 @@ function locationHandler(request, response) {
 app.get('/weather', weatherHandler);
 
 function weatherHandler(request, response) {
-  const weatherData = require('./data/darksky.json');
-  const weatherResults = [];
-  weatherData.daily.data.forEach(dailyWeather => {
-    weatherResults.push(new Weather(dailyWeather))
-  });
-  response.send(weatherResults);
+
+  // const weatherData = require('./data/darksky.json');
+
+  const weather = request.query.search_query;
+  const url = 'http://api.weatherbit.io/v2.0/current';
+
+  superagent.get(url)
+    .query({
+      key: process.env.WEATHER_KEY,
+      city: weather,
+      format: 'json'
+    })
+    .then(weatherResponse => {
+      let weatherData = weatherResponse.body;
+      let dailyResults = weatherData.data.map(dailyWeather => {
+        return new Weather(dailyWeather);
+      })
+      response.send(dailyResults);
+    })
+    .catch( error => {
+      console.log(error);
+      errorHandler(error, request, response);
+    })
+
   // const weather = request.query;  TODO: get lat/lon
+
 }
 
 // Has to happen after everything else
@@ -83,8 +102,8 @@ function Location(city, geoData) {
 }
 
 function Weather(weatherData) {
-  this.forecast = weatherData.summary;
-  this.time = new Date(weatherData.time * 1000);
+  this.forecast = weatherData.weather.description;
+  this.time = new Date(weatherData.ob_time);
 }
 
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
