@@ -80,23 +80,21 @@ app.get('/trails', trailHandler);
 
 function trailHandler(request, response) {
 
-  const trails = request.query.search_query;
-  const latitude = request.query.latitude;
-  const longitude =  request.query.longitude;
+  const lat = request.query.latitude;
+  const lon =  request.query.longitude;
   const url = 'https://www.hikingproject.com/data/get-trails';
 
   superagent.get(url)
     .query({
       key: process.env.TRAILS_KEY,
-      city: trails,
-      lat: latitude,
-      lon: longitude,
+      lat: lat,
+      lon: lon,
       format: 'json'
     })
     .then( trailsResponse => {
       let trailsData = trailsResponse.body;
       let trailsResults = trailsData.trails.map( allTrails => {
-        return new trails(allTrails);
+        return new Trails(allTrails);
       })
       response.send(trailsResults);
     })
