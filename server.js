@@ -27,6 +27,22 @@ app.get('/', (request, response) => {
   response.send('City Explorer Goes Here');
 });
 
+function setLocationInCache(city, location) {
+  locationCache[city] = {
+    cacheTime: new Date.now(),
+    location,
+  }
+  console.log('Did the location cache?', locationCache)
+}
+
+function getLocationFromCache(city) {
+  const cacheEntry = locationCache[city];
+  if (cacheEntry) {
+    return cacheEntry.location;
+  }
+  return null;
+}
+
 // Add /location route
 app.get('/location', locationHandler);
 
@@ -34,6 +50,11 @@ app.get('/location', locationHandler);
 function locationHandler(request, response) {
 
   const city = request.query.city;
+
+  const locationFromCache = getLocationFromCache(city);
+  if (locationFromCache) {
+    response.send(locationFromCache);
+  } else {
   const url = 'https://us1.locationiq.com/v1/search.php';
 
   superagent.get(url)
@@ -45,12 +66,14 @@ function locationHandler(request, response) {
     .then(locationResponse => {
       let geoData = locationResponse.body;
       const location = new Location(city, geoData);
+      setLocationInCache(city, location);
       response.send(location);
     })
     .catch( error => {
       console.log(error);
       errorHandler(error, request, response);
     })
+  }
 }
 
 app.get('/weather', weatherHandler);
