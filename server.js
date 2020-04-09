@@ -28,11 +28,17 @@ app.get('/', (request, response) => {
 });
 
 function setLocationInCache(city, location) {
-  locationCache[city] = {
-    cacheTime: new Date.now(),
-    location,
-  }
-  console.log('Did the location cache?', locationCache)
+
+  let enterSQL = `
+    INSERT INTO locations (id, search_query, formatted_query, latitude, longitude)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *;`;
+  let values = [location.search_query, location.formatted_query, location.latitude, location.longitude];
+  return client.query(setSQL, values)
+    .then(results => {
+      return results;
+    })
+    .catch( error => console.log(error));
 }
 
 function getLocationFromCache(city) {
@@ -75,6 +81,33 @@ function locationHandler(request, response) {
     })
   }
 }
+
+const SQL = 'SELECT * FROM Cities';
+client.query(SQL)
+  .then(results => {
+    console.log(results);
+
+    let {rowCount, rows} = results;
+
+    if (rowCount === 0) {
+      response.send({
+        error: true,
+        message: 'No cities in database'
+      })
+    }
+
+    else {
+      response.send({
+        error: false,
+        results: rows,
+      })
+    }
+
+  })
+  .catch(error => {
+    console.log(error);
+    errorHandler(error, request, response);
+  })
 
 app.get('/weather', weatherHandler);
 
