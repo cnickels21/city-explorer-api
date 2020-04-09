@@ -8,6 +8,14 @@ dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const superagent = require('superagent');
+const pg = requre('pg');
+
+if (!process.env.DATABASE_URL) {
+  throw 'Missing DATABASE_URL';
+}
+
+const client = new pg.Client(process.env.DATABASE_URL);
+client.on('error', error => { throw error; });
 
 // Application Setup
 const PORT = process.env.PORT;
