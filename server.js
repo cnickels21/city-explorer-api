@@ -27,27 +27,27 @@ app.get('/', (request, response) => {
   response.send('City Explorer Goes Here');
 });
 
-function setLocationInCache(city, location) {
+// function setLocationInCache(city, location) {
 
-  let enterSQL = `
-    INSERT INTO locations (id, search_query, formatted_query, latitude, longitude)
-    VALUES ($1, $2, $3, $4)
-    RETURNING *;`;
-  let values = [location.search_query, location.formatted_query, location.latitude, location.longitude];
-  return client.query(setSQL, values)
-    .then(results => {
-      return results;
-    })
-    .catch( error => console.log(error));
-}
+//   let enterSQL = `
+//     INSERT INTO locations (id, search_query, formatted_query, latitude, longitude)
+//     VALUES ($1, $2, $3, $4)
+//     RETURNING *;`;
+//   let values = [location.search_query, location.formatted_query, location.latitude, location.longitude];
+//   return client.query(setSQL, values)
+//     .then(results => {
+//       return results;
+//     })
+//     .catch( error => console.log(error));
+// }
 
-function getLocationFromCache(city) {
-  const cacheEntry = locationCache[city];
-  if (cacheEntry) {
-    return cacheEntry.location;
-  }
-  return null;
-}
+// function getLocationFromCache(city) {
+//   const cacheEntry = locationCache[city];
+//   if (cacheEntry) {
+//     return cacheEntry.location;
+//   }
+//   return null;
+// }
 
 // Add /location route
 app.get('/location', locationHandler);
@@ -57,10 +57,10 @@ function locationHandler(request, response) {
 
   const city = request.query.city;
 
-  const locationFromCache = getLocationFromCache(city);
-  if (locationFromCache) {
-    response.send(locationFromCache);
-  } else {
+  // const locationFromCache = getLocationFromCache(city);
+  // if (locationFromCache) {
+  //   response.send(locationFromCache);
+  // } else {
   const url = 'https://us1.locationiq.com/v1/search.php';
 
   superagent.get(url)
@@ -72,42 +72,41 @@ function locationHandler(request, response) {
     .then(locationResponse => {
       let geoData = locationResponse.body;
       const location = new Location(city, geoData);
-      setLocationInCache(city, location);
+      // setLocationInCache(city, location);
       response.send(location);
     })
     .catch( error => {
       console.log(error);
       errorHandler(error, request, response);
     })
-  }
 }
 
-const SQL = 'SELECT * FROM Cities';
-client.query(SQL)
-  .then(results => {
-    console.log(results);
+// const SQL = 'SELECT * FROM Cities';
+// client.query(SQL)
+//   .then(results => {
+//     console.log(results);
 
-    let {rowCount, rows} = results;
+//     let {rowCount, rows} = results;
 
-    if (rowCount === 0) {
-      response.send({
-        error: true,
-        message: 'No cities in database'
-      })
-    }
+//     if (rowCount === 0) {
+//       response.send({
+//         error: true,
+//         message: 'No cities in database'
+//       })
+//     }
 
-    else {
-      response.send({
-        error: false,
-        results: rows,
-      })
-    }
+//     else {
+//       response.send({
+//         error: false,
+//         results: rows,
+//       })
+//     }
 
-  })
-  .catch(error => {
-    console.log(error);
-    errorHandler(error, request, response);
-  })
+//   })
+//   .catch(error => {
+//     console.log(error);
+//     errorHandler(error, request, response);
+//   })
 
 app.get('/weather', weatherHandler);
 
