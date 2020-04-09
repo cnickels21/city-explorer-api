@@ -27,19 +27,25 @@ app.get('/', (request, response) => {
   response.send('City Explorer Goes Here');
 });
 
-// function setLocationInCache(city, location) {
+// Add /location route
+app.get('/location', locationHandler);
 
-//   let enterSQL = `
-//     INSERT INTO locations (id, search_query, formatted_query, latitude, longitude)
-//     VALUES ($1, $2, $3, $4)
-//     RETURNING *;`;
-//   let values = [location.search_query, location.formatted_query, location.latitude, location.longitude];
-//   return client.query(setSQL, values)
-//     .then(results => {
-//       return results;
-//     })
-//     .catch( error => console.log(error));
-// }
+// Set location into database
+function setLocationInCache(location) {
+  const {search_query, formatted_query, latitude, longitude} = location;
+  const SQL = `
+    INSERT INTO locations (search_query, formatted_query, latitude, longitude)
+    VALUES ($1, $2, $3, $4)
+    RETURNING *
+    `;
+  const parameters = [search_query, formatted_query, latitude, longitude];
+
+  return client.query(SQL, parameters)
+    .then(results => {
+      console.log('Cache location', results);
+    })
+    .catch( error => console.error(error));
+}
 
 // function getLocationFromCache(city) {
 //   const cacheEntry = locationCache[city];
@@ -49,9 +55,6 @@ app.get('/', (request, response) => {
 //   return null;
 // }
 
-// Add /location route
-app.get('/location', locationHandler);
-
 // Route Handler
 function locationHandler(request, response) {
 
@@ -60,7 +63,7 @@ function locationHandler(request, response) {
   // const locationFromCache = getLocationFromCache(city);
   // if (locationFromCache) {
   //   response.send(locationFromCache);
-  // } else {
+  // } else {}
   const url = 'https://us1.locationiq.com/v1/search.php';
 
   superagent.get(url)
@@ -72,8 +75,11 @@ function locationHandler(request, response) {
     .then(locationResponse => {
       let geoData = locationResponse.body;
       const location = new Location(city, geoData);
-      // setLocationInCache(city, location);
-      response.send(location);
+      setLocationInCache(location)
+        .then(() => {
+          console.log('Location has been cached', location);
+          response.send(location);
+        })
     })
     .catch( error => {
       console.log(error);
