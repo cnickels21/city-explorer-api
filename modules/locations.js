@@ -2,6 +2,8 @@
 
 const superagent = require('superagent');
 const client = require('../util/db');
+const errorHandler = require('./errors');
+const notFoundHandler = require('./modules/errors');
 
 function setLocationInCache(location) {
     const { search_query, formatted_query, latitude, longitude } = location;

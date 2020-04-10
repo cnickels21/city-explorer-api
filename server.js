@@ -8,8 +8,6 @@ dotenv.config();
 const express = require('express');
 const cors = require('cors');
 
-const superagent = require('superagent');
-
 // Application Setup
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -26,6 +24,8 @@ const locationHandler = require('./modules/locations');
 const weatherHandler = require('./modules/weather');
 const trailHandler = require('./modules/trails')
 const yelpHandler = require('./modules/yelp');
+const errorHandler = require('./modules/errors');
+const notFoundHandler = require('./modules/errors');
 
 // Add / routes
 app.get('/location', locationHandler);
@@ -41,21 +41,6 @@ app.use(errorHandler); // Error Middleware
 function movieHandler(request, response) {
   let movies = [];
   response.send(movies);
-}
-
-// Helper Functions
-function errorHandler(error, request, response, next) {
-  console.log(error);
-  response.status(500).json({
-    error: true,
-    message: error.message,
-  });
-}
-
-function notFoundHandler(request, response) {
-  response.status(404).json({
-    notFound: true,
-  });
 }
 
 client.connect()
