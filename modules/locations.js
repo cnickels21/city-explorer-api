@@ -13,9 +13,9 @@ function setLocationInCache(location) {
     const parameters = [search_query, formatted_query, latitude, longitude];
 
     return client.query(SQL, parameters)
-        .then(results => {
-            console.log('Cache location', results);
-        })
+        // .then(results => {
+        //     console.log('Cache location', results);
+        // })
         .catch(error => console.error(error));
 }
 
@@ -44,7 +44,6 @@ function getLocationFromAPI(city, response) {
             const location = new Location(city, geoData);
             setLocationInCache(location, response)
                 .then(() => {
-                    console.log('Location has been cached', location);
                     response.send(location);
                 })
         })
