@@ -27,8 +27,13 @@ app.get('/', (request, response) => {
   response.send('City Explorer Goes Here');
 });
 
-// Add /location route
+// Require modules for routes
+const weatherHandler = require('./modules/weather');
+
+// Add / routes
 app.get('/location', locationHandler);
+app.get('/weather', weatherHandler);
+app.get('/trails', trailHandler);
 
 // Set location into database
 function setLocationInCache(location) {
@@ -100,38 +105,11 @@ function getLocationFromAPI(city, response) {
 }
 
 
-app.get('/weather', weatherHandler);
 
-function weatherHandler(request, response) {
 
-  // const weatherData = require('./data/darksky.json');
 
-  const weather = request.query.search_query;
-  const url = 'http://api.weatherbit.io/v2.0/current';
 
-  superagent.get(url)
-    .query({
-      key: process.env.WEATHER_KEY,
-      city: weather,
-      format: 'json'
-    })
-    .then(weatherResponse => {
-      let weatherData = weatherResponse.body;
-      let dailyResults = weatherData.data.map(dailyWeather => {
-        return new Weather(dailyWeather);
-      })
-      response.send(dailyResults);
-    })
-    .catch(error => {
-      console.log(error);
-      errorHandler(error, request, response);
-    })
 
-  // const weather = request.query;  TODO: get lat/lon
-
-}
-
-app.get('/trails', trailHandler);
 
 function trailHandler(request, response) {
 
@@ -196,11 +174,6 @@ function Location(city, geoData) {
   this.longitude = parseFloat(geoData[0].lon);
 }
 
-function Weather(weatherData) {
-  this.forecast = weatherData.weather.description;
-  this.time = new Date(weatherData.ob_time).toDateString();
-}
-
 function Trails(trailsData) {
   this.name = trailsData.name;
   this.location = trailsData.location;
@@ -212,5 +185,3 @@ function Trails(trailsData) {
   this.conditions = trailsData.conditionDetails;
   this.condition_date = new Date(trailsData.conditionDate).toDateString();
 }
-
-// app.listen(PORT, () => console.log(`Listening on ${PORT}`));
