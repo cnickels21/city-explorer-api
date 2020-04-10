@@ -2,8 +2,6 @@
 
 const superagent = require('superagent');
 const client = require('../util/db');
-const errorHandler = require('./errors');
-const notFoundHandler = require('./modules/errors');
 
 function setLocationInCache(location) {
     const { search_query, formatted_query, latitude, longitude } = location;
@@ -15,9 +13,9 @@ function setLocationInCache(location) {
     const parameters = [search_query, formatted_query, latitude, longitude];
 
     return client.query(SQL, parameters)
-        // .then(results => {
-        //     console.log('Cache location', results);
-        // })
+        .then(results => {
+            console.log('Cache location', results);
+        })
         .catch(error => console.error(error));
 }
 
