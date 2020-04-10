@@ -1,8 +1,6 @@
 'use strict';
 
 const superagent = require('superagent');
-const errorHandler = require('./errors');
-const notFoundHandler = require('./errors');
 
 function trailHandler(request, response) {
 
