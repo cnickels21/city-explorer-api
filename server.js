@@ -32,12 +32,16 @@ app.get('/location', locationHandler);
 app.get('/weather', weatherHandler);
 app.get('/trails', trailHandler);
 app.get('/yelp', yelpHandler);
+app.get('/movies', movieHandler);
 
 // Has to happen after everything else
 app.use(notFoundHandler);
 app.use(errorHandler); // Error Middleware
 
-
+function movieHandler(request, response) {
+  let movies = [];
+  response.send(movies);
+}
 
 // Helper Functions
 function errorHandler(error, request, response, next) {
