@@ -7,15 +7,6 @@ dotenv.config();
 // Application Dependencies
 const express = require('express');
 const cors = require('cors');
-const superagent = require('superagent');
-const pg = require('pg');
-
-if (!process.env.DATABASE_URL) {
-  throw 'Missing DATABASE_URL';
-}
-
-const client = new pg.Client(process.env.DATABASE_URL);
-client.on('error', error => { throw error; });
 
 // Application Setup
 const PORT = process.env.PORT || 3000;
@@ -28,6 +19,7 @@ app.get('/', (request, response) => {
 });
 
 // Require modules for routes
+const client = require('./util/db');
 const locationHandler = require('./modules/locations');
 const weatherHandler = require('./modules/weather');
 const trailHandler = require('./modules/trails')
@@ -63,5 +55,4 @@ client.connect()
   })
   .catch(error => {
     throw `Something went wrong: ${error}`;
-  })
-
+  });

@@ -1,5 +1,8 @@
 'use strict';
 
+const superagent = require('superagent');
+const client = require('../util/db');
+
 function setLocationInCache(location) {
     const { search_query, formatted_query, latitude, longitude } = location;
     const SQL = `
